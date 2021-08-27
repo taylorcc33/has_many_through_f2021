@@ -1,4 +1,5 @@
 class TrainersController < ApplicationController
+  skip_before_action :verify_authenticity_token
   before_action :set_trainer, only: [:show, :update, :edit, :destroy]
 
   def index
@@ -7,7 +8,8 @@ class TrainersController < ApplicationController
   end
 
   def show
-    render component: "Trainer", props: { trainer: @trainer }
+    @pokemons = @trainer.pokemons
+    render component: "Trainer", props: { trainer: @trainer, pokemons: @pokemons }
   end
 
   def new
@@ -34,7 +36,7 @@ class TrainersController < ApplicationController
 
   def destroy
     @trainer.destroy
-    redirect_to trainer_paths
+    redirect_to trainers_path
   end
 
   private
@@ -44,6 +46,6 @@ class TrainersController < ApplicationController
   end
 
   def trainer_params
-    params.require(:trainer).permint(:name, :location)
+    params.require(:trainer).permit(:name, :location)
   end
 end
